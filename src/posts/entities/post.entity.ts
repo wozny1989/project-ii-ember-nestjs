@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { Like } from '../../likes/entities/like.entity';
 
 @Entity()
 export class Post {
@@ -27,8 +28,8 @@ export class Post {
   @ManyToOne(() => User, (user) => user.posts)
   owner: User;
 
-  @OneToMany(() => Post, (post) => post.likes)
-  likes: Post[];
+  @OneToMany(() => Like, (like) => like.post)
+  likes: Like[];
 
   @RelationId((self: Post) => self.owner)
   ownerId: number;
