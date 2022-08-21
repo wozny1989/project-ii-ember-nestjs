@@ -26,6 +26,41 @@ const getModelName = (
   return { modelName, pluralModelName };
 };
 
+const replaceRelationshipKeys = (data: object) => {
+  if (Array.isArray(data)) {
+    data.map((object, index) => {
+      _replace(object, data, index);
+    });
+
+    return;
+  }
+
+  _replace(data, data);
+
+  function _replace(object: any, data: any, index?: number) {
+    Object.keys(object).map((key: any) => {
+      const isBelongsToKey = key.endsWith('Id');
+      const isHasManyKey = key.endsWith('Ids');
+      const isRelationshipKey = isBelongsToKey || isHasManyKey;
+
+      if (isRelationshipKey) {
+        const newKeyWithoutSuffix: any = isBelongsToKey
+          ? key.slice(0, -2)
+          : key.slice(0, -3);
+
+        if (index === undefined) {
+          data[newKeyWithoutSuffix] = data[key];
+          delete data[key];
+          return;
+        }
+
+        data[index][newKeyWithoutSuffix] = data[index][key];
+        delete data[index][key];
+      }
+    });
+  }
+};
+
 @Injectable()
 export class TransformInterceptor<T>
   implements NestInterceptor<T, Response<T>>
@@ -43,6 +78,7 @@ export class TransformInterceptor<T>
 
     return next.handle().pipe(
       map((data) => {
+        replaceRelationshipKeys(data);
         if (Array.isArray(data)) {
           return { [pluralModelName]: data };
         }
