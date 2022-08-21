@@ -3,13 +3,15 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { LikesService } from './likes.service';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
+import { FindManyOptions } from 'typeorm';
 
 @Controller('likes')
 export class LikesController {
@@ -21,8 +23,8 @@ export class LikesController {
   }
 
   @Get()
-  findAll() {
-    return this.likesService.findAll();
+  findAll(@Query() query: FindManyOptions) {
+    return this.likesService.findAll(query);
   }
 
   @Get(':id')
@@ -30,7 +32,7 @@ export class LikesController {
     return this.likesService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateLikeDto: UpdateLikeDto) {
     return this.likesService.update(+id, updateLikeDto);
   }

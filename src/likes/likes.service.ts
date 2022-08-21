@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
 import { Like } from './entities/like.entity';
@@ -19,8 +19,8 @@ export class LikesService {
     return newLike;
   }
 
-  async findAll() {
-    return await this.likesRepository.find();
+  async findAll(query: FindManyOptions) {
+    return await this.likesRepository.find(query);
   }
 
   async findOne(id: number) {

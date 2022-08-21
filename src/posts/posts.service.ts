@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
@@ -19,8 +19,8 @@ export class PostsService {
     return newPost;
   }
 
-  async findAll() {
-    return await this.postsRepository.find();
+  async findAll(query: FindManyOptions) {
+    return await this.postsRepository.find(query);
   }
 
   async findOne(id: number) {
